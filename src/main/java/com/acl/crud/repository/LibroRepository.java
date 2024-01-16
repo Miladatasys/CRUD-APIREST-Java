@@ -4,6 +4,4 @@ import com.acl.crud.model.Libro;
 
 public interface LibroRepository extends MongoRepository<Libro, String> {
     
-} 
-
-
+}

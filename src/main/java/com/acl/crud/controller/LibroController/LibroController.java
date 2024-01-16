@@ -3,6 +3,8 @@ import com.acl.crud.model.Libro;
 import com.acl.crud.service.LibroService;
 
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,10 +33,20 @@ public class LibroController {
     }
 
     @PutMapping("/{id}")
-    public Libro updateLibro(@PathVariable String id, @RequestBody Libro libro) {
-        // Opcional: implementar una comprobación para ver si el libro con ese ID existe
-        libro.setId(id);
-        return libroService.save(libro);
+    public ResponseEntity<Libro> updateLibro(@PathVariable String id, @RequestBody Libro libro) {
+        Libro existingLibro = libroService.findById(id);
+        if (existingLibro == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        existingLibro.setTitulo(libro.getTitulo());
+        existingLibro.setAutor(libro.getAutor());
+        existingLibro.setEditorial(libro.getEditorial());
+        existingLibro.setAñoPublicacion(libro.getAñoPublicacion());
+
+        Libro updatedLibro = libroService.save(existingLibro);
+
+        return ResponseEntity.ok(updatedLibro);
     }
 
     @DeleteMapping("/{id}")
